@@ -127,6 +127,7 @@ public class ArrayDeque<E> extends AbstractCollection<E>
         int initialCapacity = MIN_INITIAL_CAPACITY;
         // Find the best power of two to hold elements.
         // Tests "<=" because arrays aren't kept full.
+        // todo why and how?
         if (numElements >= initialCapacity) {
             initialCapacity = numElements;
             initialCapacity |= (initialCapacity >>>  1);
