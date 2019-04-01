@@ -373,11 +373,22 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 
     /**
      * Returns a power of two size for the given target capacity.
+     * 找到大于等于 initialCapacity 的最小的 2 的幂（initialCapacity 如果就是 2 的幂，则返回的还是这个数）
+     * {@see https://blog.csdn.net/fan2012huan/article/details/51097331}
+     * 每次右移一位
      */
     static final int tableSizeFor(int cap) {
+        // 防止 cap 已经是 2 的幂;如果 cap 已经是 2 的幂， 又没有执行这个减 1 操作，
+        // 则执行完后面的几条无符号右移操作之后，返回的 capacity 将是这个 cap 的 2 倍
         int n = cap - 1;
+        // (n != 0 时) n 的二进制表示中总会有一 bit 为 1，这时考虑最高位的 1。
+        // 通过无符号右移 1 位，则将最高位的 1 右移了 1 位，再做或操作，
+        // 使得 n 的二进制表示中与最高位的 1 紧邻的右边一位也为 1，如 000011xxxxxx
         n |= n >>> 1;
+        // 此时再将 n 无符号右移两位，会将最高位两个连续的 1 右移两位，然后再与原来的 n 做或操作，
+        // 这样 n 的二进制表示的高位中会有 4 个连续的 1。如 00001111xxxxxx.
         n |= n >>> 2;
+        // 以此类推: 第三次右移将会使 n 的高位中有 8 个连续的 1
         n |= n >>> 4;
         n |= n >>> 8;
         n |= n >>> 16;
