@@ -534,7 +534,9 @@ public class TreeMap<K,V>
      */
     public V put(K key, V value) {
         Entry<K,V> t = root;
+        // 添加第一个节点时
         if (t == null) {
+            // 这里的目的不是为了比较，而是为了检查key的类型和null，如果类型不匹配或为null，那么compare方法会抛出异常。
             compare(key, key); // type (and possibly null) check
 
             root = new Entry<>(key, value, null);
@@ -542,11 +544,17 @@ public class TreeMap<K,V>
             modCount++;
             return null;
         }
+        // 添加其他节点时
         int cmp;
         Entry<K,V> parent;
         // split comparator and comparable paths
         Comparator<? super K> cpr = comparator;
+        // 如果有比较器
         if (cpr != null) {
+            // 从根节点开始循环，在循环中，cmp保存比较结果，t指向当前比较节点，parent为t的父节点，循环结束后parent就是
+            // 要找的父节点。t一开始指向根节点，从根节点开始比较键，如果小于根节点，就将t设为左孩子，与左孩子比较，大于
+            // 就与右孩子比较，就这样一直比，直到t为null或比较结果为0。如果比较结果为0，表示已经有这个键了，设置值，然
+            // 后返回。如果t为null，则当退出循环时，parent就指向待插入节点的父节点。
             do {
                 parent = t;
                 cmp = cpr.compare(key, t.key);
